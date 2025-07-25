@@ -1,5 +1,5 @@
 import React from "react";
-import { Eye, Edit, Calendar, DollarSign, Users } from "lucide-react";
+import { Eye, Edit, Calendar, DollarSign, Users, Trash2 } from "lucide-react";
 import type { Job } from "../../types/clientpage";
 import { formatDate, formatBudget, getStatusColor } from "../../utils/helpers";
 
@@ -7,26 +7,43 @@ interface JobCardProps {
   job: Job;
   onViewApplications: (job: Job) => void;
   onEdit?: (job: Job) => void;
+  onDelete: (jobId: string) => void;
 }
 
 const JobCard: React.FC<JobCardProps> = ({
   job,
   onViewApplications,
   onEdit,
+  onDelete,
 }) => {
+  const handleDelete = () => {
+    if (window.confirm(`Are you sure you want to delete "${job.title}"?`)) {
+      onDelete(job._id);
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-lg font-semibold text-gray-900 truncate pr-2">
           {job.title}
         </h3>
-        <span
-          className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
-            job.status
-          )}`}
-        >
-          {job.status}
-        </span>
+        <div className="flex items-center gap-2">
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
+              job.status
+            )}`}
+          >
+            {job.status}
+          </span>
+          <button
+            onClick={handleDelete}
+            className="text-red-500 hover:text-red-700 p-1 rounded transition-colors"
+            title="Delete job"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       <p className="text-gray-600 text-sm mb-4 line-clamp-3">

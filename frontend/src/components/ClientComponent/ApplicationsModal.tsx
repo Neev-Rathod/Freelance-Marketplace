@@ -196,14 +196,18 @@ const ApplicationsModal: React.FC<ApplicationsModalProps> = ({
                         </p>
                       </div>
                     </div>
-
-                    <div className="mb-4">
-                      <h4 className="font-medium text-gray-900 mb-2">
-                        Cover Letter:
-                      </h4>
-                      <p className="text-gray-700 text-sm leading-relaxed">
-                        {application.coverLetter}
-                      </p>
+                    <div className="flex justify-between items-end">
+                      <div className="mb-4">
+                        <h4 className="font-medium text-gray-900 mb-2">
+                          Cover Letter:
+                        </h4>
+                        <p className="text-gray-700 text-sm leading-relaxed">
+                          {application.coverLetter}
+                        </p>
+                      </div>
+                      <button className="bg-gray-800 text-white p-2 rounded-lg mb-4">
+                        Raise a Dispute
+                      </button>
                     </div>
 
                     {application.freelancer?.skills &&

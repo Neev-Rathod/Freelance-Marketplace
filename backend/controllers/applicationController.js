@@ -81,7 +81,7 @@ const applicationController = {
         .populate("freelancer");
 
       if (!application) {
-        return res.status(404).json({ error: "Application not found" });
+        return res.status(404).json({ error: "App lication not found" });
       }
 
       // Verify job belongs to client

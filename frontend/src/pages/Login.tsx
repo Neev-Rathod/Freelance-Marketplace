@@ -80,7 +80,7 @@ export default function Login() {
                 Email
               </label>
               <input
-                type="email"
+                type="text"
                 required
                 value={formData.email}
                 onChange={(e) =>

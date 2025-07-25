@@ -47,6 +47,18 @@ export const jobsApi = {
     );
     return response.data;
   },
+
+  // Close a job
+  closeJob: async (jobId: string) => {
+    const response = await axios.put(
+      `${API_BASE_URL}/jobs/${jobId}/close`,
+      {},
+      {
+        headers: getAuthHeaders(),
+      }
+    );
+    return response.data;
+  },
 };
 
 export const applicationsApi = {
@@ -70,5 +82,88 @@ export const applicationsApi = {
         headers: getAuthHeaders(),
       }
     );
+  },
+};
+
+export const userApi = {
+  getProfile: async () => {
+    const response = await axios.get(`${API_BASE_URL}/users/profile`, {
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  },
+};
+
+// Contracts API
+export const contractsApi = {
+  getActiveContracts: async () => {
+    const response = await axios.get(`${API_BASE_URL}/contracts/active`, {
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  },
+
+  completeContract: async (contractId: string) => {
+    const response = await axios.put(
+      `${API_BASE_URL}/contracts/${contractId}/complete`,
+      {},
+      {
+        headers: getAuthHeaders(),
+      }
+    );
+    return response.data;
+  },
+};
+
+// Ratings API
+export const ratingsApi = {
+  submitRating: async (ratingData: {
+    jobId: string;
+    toUserId: string;
+    rating: number;
+    review: string;
+  }) => {
+    const response = await axios.post(`${API_BASE_URL}/ratings/`, ratingData, {
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  },
+};
+
+export const disputeApi = {
+  raiseDispute: async (disputeData: {
+    jobId: string;
+    againstUserId: string;
+    reason: string;
+  }) => {
+    const response = await axios.post(`${API_BASE_URL}/disputes`, disputeData, {
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  },
+  resolveDispute: async (
+    disputeId: string,
+    resolveData: {
+      resolution: string;
+      status: "open" | "resolved" | "rejected";
+    }
+  ) => {
+    const response = await axios.post(
+      `${API_BASE_URL}/disputes/admin/disputes/${disputeId}/resolve`,
+      resolveData,
+      {
+        headers: getAuthHeaders(),
+      }
+    );
+    return response.data;
+  },
+  getDispute: async () => {
+    const response = await axios.post(
+      `${API_BASE_URL}/disputes/admin/disputes`,
+      {
+        headers: getAuthHeaders(),
+      }
+    );
+    return response.data;
   },
 };

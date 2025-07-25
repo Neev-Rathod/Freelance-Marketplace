@@ -5,6 +5,9 @@ import { jobsApi } from "../api/request";
 import JobCard from "../components/ClientComponent/JobCard";
 import JobForm from "../components/ClientComponent/JobForm";
 import ApplicationsModal from "../components/ClientComponent/ApplicationsModal";
+import Navbar from "../components/ClientComponent/Navbar";
+import UserProfileModal from "../components/ClientComponent/UserProfileModal";
+import ActiveContractsModal from "../components/ClientComponent/ActiveContractsModal";
 
 const ClientPage: React.FC = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -13,6 +16,8 @@ const ClientPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showApplications, setShowApplications] = useState(false);
   const [showJobForm, setShowJobForm] = useState(false);
+  const [showUserProfile, setShowUserProfile] = useState(false);
+  const [showActiveContracts, setShowActiveContracts] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
 
   useEffect(() => {
@@ -45,6 +50,15 @@ const ClientPage: React.FC = () => {
   const handleViewApplications = (job: Job) => {
     setSelectedJob(job);
     setShowApplications(true);
+  };
+
+  const handleDeleteJob = async (jobId: string) => {
+    try {
+      await jobsApi.closeJob(jobId);
+      await fetchJobs();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete job");
+    }
   };
 
   const handleJobUpdate = () => {
@@ -80,6 +94,12 @@ const ClientPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Navbar
+        onShowProfile={() => setShowUserProfile(true)}
+        onShowContracts={() => setShowActiveContracts(true)}
+        onPostJob={() => setShowJobForm(true)}
+      />
+
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -124,6 +144,7 @@ const ClientPage: React.FC = () => {
                 key={job._id}
                 job={job}
                 onViewApplications={handleViewApplications}
+                onDelete={handleDeleteJob}
               />
             ))}
           </div>
@@ -145,6 +166,16 @@ const ClientPage: React.FC = () => {
           }}
           job={selectedJob}
           onJobUpdate={handleJobUpdate}
+        />
+
+        <UserProfileModal
+          isOpen={showUserProfile}
+          onClose={() => setShowUserProfile(false)}
+        />
+
+        <ActiveContractsModal
+          isOpen={showActiveContracts}
+          onClose={() => setShowActiveContracts(false)}
         />
       </div>
     </div>
