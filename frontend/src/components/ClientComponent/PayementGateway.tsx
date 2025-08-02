@@ -42,11 +42,11 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl max-w-md w-full">
-        <div className="p-6 border-b border-gray-200">
+    <div className="fixed inset-0 bg-black/30 bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-gray-800 rounded-xl max-w-md w-full">
+        <div className="p-6 border-b border-gray-700">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+            <h2 className="text-xl font-bold text-gray-100 flex items-center gap-2">
               <Lock className="w-5 h-5" />
               Secure Payment
             </h2>
@@ -60,14 +60,14 @@ const PaymentGateway: React.FC<PaymentGatewayProps> = ({
         </div>
 
         <div className="p-6">
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+          <div className="mb-6 p-4 bg-gray-900 rounded-lg">
             <div className="flex justify-between items-center mb-2">
               <span className="text-gray-600">Payment to:</span>
               <span className="font-medium">{freelancerName}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Amount:</span>
-              <span className="text-2xl font-bold text-gray-900">
+              <span className="text-2xl font-bold text-gray-200">
                 ${amount.toLocaleString()}
               </span>
             </div>

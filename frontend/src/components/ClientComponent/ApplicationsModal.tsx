@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { X, Star, Clock, DollarSign, CheckCircle, XCircle } from "lucide-react";
+import { X, Clock, DollarSign, CheckCircle, XCircle } from "lucide-react";
 import type { Job, Application } from "../../types/clientpage";
-import { jobsApi, applicationsApi } from "../../api/request";
+import { jobsApi, applicationsApi, disputeApi } from "../../api/request";
 import {
   formatDate,
   formatBudget,
@@ -24,17 +24,20 @@ const ApplicationsModal: React.FC<ApplicationsModalProps> = ({
   onJobUpdate,
 }) => {
   const [applications, setApplications] = useState<Application[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [showPayment, setShowPayment] = useState(false);
+  const [showPayment, setShowPayment] = useState<boolean>(false);
   const [selectedApplication, setSelectedApplication] =
     useState<Application | null>(null);
-
+  const [disputeModal, setDisputeModal] = useState<boolean>(false);
+  const [disputeReason, setDisputeReason] = useState<string>("");
+  const [disputeAgainst, setDisputeAgainst] = useState<string>("");
   useEffect(() => {
     if (isOpen && job) {
       fetchApplications();
     }
   }, [isOpen, job]);
+  console.log(job);
 
   const fetchApplications = async () => {
     if (!job) return;
@@ -50,36 +53,6 @@ const ApplicationsModal: React.FC<ApplicationsModalProps> = ({
       );
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleAcceptApplication = async (application: Application) => {
-    try {
-      try {
-        await applicationsApi.acceptApplication(application._id);
-      } catch (err) {
-        throw new Error(
-          "Error in acceptApplication API: " +
-            (err instanceof Error ? err.message : err)
-        );
-      }
-
-      try {
-        setSelectedApplication(application);
-        setShowPayment(true);
-
-        await fetchApplications();
-        onJobUpdate();
-      } catch (err) {
-        throw new Error(
-          "Error in post-API calls: " +
-            (err instanceof Error ? err.message : err)
-        );
-      }
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to accept application"
-      );
     }
   };
 
@@ -110,15 +83,64 @@ const ApplicationsModal: React.FC<ApplicationsModalProps> = ({
     }
   };
 
+  const handleRaiseDispute = async () => {
+    try {
+      await disputeApi.raiseDispute({
+        jobId: job?._id || "",
+        againstUserId: disputeAgainst,
+        reason: disputeReason,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+    setDisputeModal(false);
+    setDisputeReason("");
+    setDisputeAgainst("");
+  };
+
   if (!isOpen || !job) return null;
 
   return (
     <>
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-xl max-w-4xl w-full max-h-[80vh] overflow-y-auto">
-          <div className="p-6 border-b border-gray-200">
+      {disputeModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-200">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg  w-96 max-w-[90vw] ">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-gray-900">
+              <p>Enter the dispute</p>
+              <p
+                className="cursor-pointer"
+                onClick={() => {
+                  setDisputeModal(false);
+                  setDisputeReason("");
+                  setDisputeAgainst("");
+                }}
+              >
+                <X></X>
+              </p>
+            </div>
+            <textarea
+              name=""
+              id=""
+              rows={4}
+              placeholder="Enter Your disupte reason"
+              value={disputeReason}
+              onChange={(e) => setDisputeReason(e.target.value)}
+              className="w-full bg-gray-700 border-1 border-gray-600 px-4 py-2 rounded my-2 outline-0 resize-none"
+            ></textarea>
+            <button
+              onClick={handleRaiseDispute}
+              className="w-full bg-gray-700 hover:bg-gray-900 transition text-white py-2 rounded"
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      )}
+      <div className="fixed inset-0 bg-black/30 bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="bg-gray-800 rounded-xl max-w-4xl w-full max-h-[80vh] overflow-y-auto">
+          <div className="p-6 border-b border-gray-900">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-100">
                 Applications for "{job.title}"
               </h2>
               <button
@@ -151,12 +173,12 @@ const ApplicationsModal: React.FC<ApplicationsModalProps> = ({
                 {applications.map((application) => (
                   <div
                     key={application._id}
-                    className="border border-gray-200 rounded-lg p-6 hover:shadow-sm transition-shadow"
+                    className="bg-gray-900 rounded-lg p-6 hover:shadow-sm transition-shadow"
                   >
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-semibold text-gray-900 text-lg">
+                          <h3 className="font-semibold text-gray-100 text-lg">
                             {application.freelancer?.name || "Anonymous"}
                           </h3>
                           <span
@@ -167,7 +189,7 @@ const ApplicationsModal: React.FC<ApplicationsModalProps> = ({
                             {application.status}
                           </span>
                         </div>
-                        <p className="text-gray-600 text-sm mb-2">
+                        <p className="text-gray-400 text-sm mb-2">
                           {application.freelancer?.email}
                         </p>
                         {application.freelancer?.rating && (
@@ -175,7 +197,7 @@ const ApplicationsModal: React.FC<ApplicationsModalProps> = ({
                             <span className="text-yellow-500">
                               {getRatingStars(application.freelancer.rating)}
                             </span>
-                            <span className="text-gray-600">
+                            <span className="text-gray-300">
                               {application.freelancer.rating.toFixed(1)} (
                               {application.freelancer.ratingsCount} reviews)
                             </span>
@@ -198,14 +220,20 @@ const ApplicationsModal: React.FC<ApplicationsModalProps> = ({
                     </div>
                     <div className="flex justify-between items-end">
                       <div className="mb-4">
-                        <h4 className="font-medium text-gray-900 mb-2">
+                        <h4 className="font-medium text-gray-200 mb-2">
                           Cover Letter:
                         </h4>
                         <p className="text-gray-700 text-sm leading-relaxed">
                           {application.coverLetter}
                         </p>
                       </div>
-                      <button className="bg-gray-800 text-white p-2 rounded-lg mb-4">
+                      <button
+                        className="bg-gray-800 text-white p-2 rounded-lg mb-4"
+                        onClick={() => {
+                          setDisputeModal(true);
+                          setDisputeAgainst(application.freelancer._id);
+                        }}
+                      >
                         Raise a Dispute
                       </button>
                     </div>

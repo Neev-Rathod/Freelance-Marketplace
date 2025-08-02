@@ -10,31 +10,7 @@ import {
 import { contractsApi } from "../../api/request";
 import { formatDate, formatBudget } from "../../utils/helpers";
 import RatingModal from "./RatingModal";
-
-interface Contract {
-  _id: string;
-  job: {
-    _id: string;
-    title: string;
-    description: string;
-    budget: number;
-    deadline: string;
-  };
-  client: {
-    _id: string;
-    name: string;
-    email: string;
-    company?: string;
-  };
-  freelancer: {
-    _id: string;
-    name: string;
-    email: string;
-    skills: string[];
-  };
-  status: string;
-  createdAt: string;
-}
+import type { Contract } from "../../types/clientpage";
 
 interface ActiveContractsModalProps {
   isOpen: boolean;
@@ -87,11 +63,11 @@ const ActiveContractsModal: React.FC<ActiveContractsModalProps> = ({
 
   return (
     <>
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-xl max-w-4xl w-full max-h-[80vh] overflow-y-auto">
+      <div className="fixed inset-0 bg-black/30 bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="bg-gray-800 rounded-xl max-w-4xl w-full max-h-[80vh] overflow-y-auto">
           <div className="p-6 border-b border-gray-200">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
                 <FileText className="w-6 h-6" />
                 Active Contracts
               </h2>
@@ -130,20 +106,20 @@ const ActiveContractsModal: React.FC<ActiveContractsModalProps> = ({
                   >
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 text-lg mb-2">
+                        <h3 className="font-semibold text-gray-100 text-lg mb-2">
                           {contract.job.title}
                         </h3>
-                        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                        <p className="text-gray-300 text-sm mb-3 line-clamp-2">
                           {contract.job.description}
                         </p>
-                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                        <div className="flex items-center gap-4 text-sm text-gray-200">
                           <div className="flex items-center gap-1">
                             <DollarSign className="w-4 h-4" />
-                            <span className="font-medium text-gray-900">
+                            <span className="font-medium ">
                               {formatBudget(contract.job.budget)}
                             </span>
                           </div>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 text-gray-200">
                             <Calendar className="w-4 h-4" />
                             <span>{formatDate(contract.job.deadline)}</span>
                           </div>
@@ -154,14 +130,14 @@ const ActiveContractsModal: React.FC<ActiveContractsModalProps> = ({
                       </span>
                     </div>
 
-                    <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                    <div className="mb-4 p-3 bg-gray-900 rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
                         <User className="w-4 h-4 text-gray-500" />
-                        <span className="font-medium text-gray-900">
+                        <span className="font-medium text-gray-100">
                           Freelancer: {contract.freelancer.name}
                         </span>
                       </div>
-                      <p className="text-gray-600 text-sm mb-2">
+                      <p className="text-gray-300 text-sm mb-2">
                         {contract.freelancer.email}
                       </p>
                       {contract.freelancer.skills.length > 0 && (
@@ -169,7 +145,7 @@ const ActiveContractsModal: React.FC<ActiveContractsModalProps> = ({
                           {contract.freelancer.skills.map((skill, index) => (
                             <span
                               key={index}
-                              className="bg-gray-200 text-gray-700 px-2 py-1 rounded text-xs"
+                              className="bg-gray-700 text-gray-100 px-2 py-1 rounded text-xs"
                             >
                               {skill}
                             </span>

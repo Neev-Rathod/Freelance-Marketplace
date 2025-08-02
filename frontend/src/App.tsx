@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import ClientPage from "./pages/ClientPage";
 import FreelancerPage from "./pages/FreelancerPage";
+import AdminPage from "./pages/AdminPage";
 
 function App() {
   return (
@@ -22,11 +23,20 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/freelancer"
           element={
             <ProtectedRoute>
               <FreelancerPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminPage />
             </ProtectedRoute>
           }
         />

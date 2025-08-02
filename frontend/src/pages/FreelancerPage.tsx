@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import {
   Briefcase,
   DollarSign,
@@ -12,25 +12,12 @@ import {
   CheckCircle,
 } from "lucide-react";
 
-// Type definitions
-interface Client {
-  _id: string;
-  name: string;
-  email: string;
-}
-
-interface Job {
-  _id: string;
-  client: Client;
-  title: string;
-  description: string;
-  category: string;
-  budget: number;
-  status: "open" | "closed";
-  applications: string[];
-  createdAt: string;
-  __v: number;
-}
+// Import the new components
+import Navbar from "../components/FreelancerComponent/Navbar";
+import ProfileModal from "../components/FreelancerComponent/ProfileModal";
+import ActiveContractsModal from "../components/FreelancerComponent/ActiveContractsModal";
+import { adminApi, jobsApi } from "../api/request";
+import type { Job } from "../types/clientpage";
 
 interface ApplicationData {
   coverLetter: string;
@@ -89,7 +76,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, onClick }) => {
           {job.status}
         </span>
         <span className="text-xs text-gray-500">
-          {job.applications.length} applications
+          {job.applications?.length} applications
         </span>
       </div>
     </div>
@@ -219,9 +206,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
     try {
       await onSubmit(job._id, formData);
       setSuccess(true);
-      setTimeout(() => {
-        onClose();
-      }, 2000);
+      onClose();
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.message || "Failed to submit application");
@@ -375,7 +360,10 @@ const FreelancerPage: React.FC = () => {
     useState<boolean>(false);
   const [applicationJob, setApplicationJob] = useState<Job | null>(null);
 
-  const API_URL = import.meta.env.VITE_API_URL;
+  // New state for modals
+  const [showProfileModal, setShowProfileModal] = useState<boolean>(false);
+  const [showActiveContractsModal, setShowActiveContractsModal] =
+    useState<boolean>(false);
 
   useEffect(() => {
     fetchJobs();
@@ -383,14 +371,9 @@ const FreelancerPage: React.FC = () => {
 
   const fetchJobs = async (): Promise<void> => {
     try {
-      const token = localStorage.getItem("token");
       setLoading(true);
-      const response = await axios.get<Job[]>(`${API_URL}/jobs`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setJobs(response.data);
+      const jobsData = await adminApi.getAllJobs();
+      setJobs(jobsData);
       setError("");
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -421,17 +404,12 @@ const FreelancerPage: React.FC = () => {
     jobId: string,
     applicationData: ApplicationData
   ): Promise<any> => {
-    const token = localStorage.getItem("token");
-    const response = await axios.post(
-      `${API_URL}/applications/${jobId}/applications`,
-      applicationData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return response.data;
+    return await jobsApi.applyForJob(jobId, applicationData);
+  };
+
+  const handleLogout = (): void => {
+    // Redirect to login page or handle logout
+    window.location.href = "/login"; // Adjust this based on your routing
   };
 
   if (loading) {
@@ -445,25 +423,16 @@ const FreelancerPage: React.FC = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-950 flex items-center justify-center">
-        <div className="text-center">
-          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <p className="text-red-400">{error}</p>
-          <button
-            onClick={fetchJobs}
-            className="mt-4 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition-colors"
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-950">
+      {/* Navbar */}
+      <Navbar
+        onProfileClick={() => setShowProfileModal(true)}
+        onActiveContractsClick={() => setShowActiveContractsModal(true)}
+        onLogout={handleLogout}
+      />
+
+      {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Available Jobs</h1>
@@ -471,6 +440,19 @@ const FreelancerPage: React.FC = () => {
             Browse and apply for freelance opportunities
           </p>
         </div>
+
+        {error && (
+          <div className="mb-6 bg-red-900/20 border border-red-800 text-red-400 p-4 rounded-lg flex items-center gap-2">
+            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <span>{error}</span>
+            <button
+              onClick={fetchJobs}
+              className="ml-auto bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        )}
 
         {jobs.length === 0 ? (
           <div className="text-center py-16">
@@ -488,6 +470,7 @@ const FreelancerPage: React.FC = () => {
         )}
       </div>
 
+      {/* Job Details Modal */}
       {selectedJob && (
         <JobDetailsModal
           job={selectedJob}
@@ -496,6 +479,7 @@ const FreelancerPage: React.FC = () => {
         />
       )}
 
+      {/* Application Form Modal */}
       {showApplicationForm && applicationJob && (
         <ApplicationForm
           job={applicationJob}
@@ -506,6 +490,18 @@ const FreelancerPage: React.FC = () => {
           onSubmit={handleApplicationSubmit}
         />
       )}
+
+      {/* Profile Modal */}
+      <ProfileModal
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+      />
+
+      {/* Active Contracts Modal */}
+      <ActiveContractsModal
+        isOpen={showActiveContractsModal}
+        onClose={() => setShowActiveContractsModal(false)}
+      />
     </div>
   );
 };

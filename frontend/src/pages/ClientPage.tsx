@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Plus, Briefcase } from "lucide-react";
+import { Briefcase } from "lucide-react";
 import type { Job, JobFormData } from "../types/clientpage";
 import { jobsApi } from "../api/request";
 import JobCard from "../components/ClientComponent/JobCard";
@@ -93,7 +93,7 @@ const ClientPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-800 text-gray-100">
       <Navbar
         onShowProfile={() => setShowUserProfile(true)}
         onShowContracts={() => setShowActiveContracts(true)}
@@ -104,25 +104,14 @@ const ClientPage: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <Briefcase className="w-8 h-8 text-gray-900" />
-            <h1 className="text-4xl font-bold text-gray-900">
+            <Briefcase className="w-8 h-8 text-gray-300" />
+            <h1 className="text-4xl font-bold text-gray-100">
               Client Dashboard
             </h1>
           </div>
           <p className="text-gray-600 text-lg">
             Manage your posted jobs and review applications
           </p>
-        </div>
-
-        {/* Post New Job Button */}
-        <div className="mb-8 text-center">
-          <button
-            onClick={() => setShowJobForm(true)}
-            className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center gap-2 shadow-sm"
-          >
-            <Plus className="w-5 h-5" />
-            Post New Job
-          </button>
         </div>
 
         {/* Jobs Grid */}

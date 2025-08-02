@@ -121,11 +121,11 @@ const JobForm: React.FC<JobFormProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6 border-b border-gray-200">
+    <div className="fixed inset-0 bg-black/30 bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-gray-800 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6 border-b border-gray-900">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-gray-900">Post New Job</h2>
+            <h2 className="text-2xl font-bold text-gray-100">Post New Job</h2>
             <button
               onClick={handleClose}
               className="text-gray-500 hover:text-gray-700"
@@ -146,7 +146,7 @@ const JobForm: React.FC<JobFormProps> = ({
             <div>
               <label
                 htmlFor="title"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-gray-200 mb-1"
               >
                 Job Title *
               </label>
@@ -156,7 +156,7 @@ const JobForm: React.FC<JobFormProps> = ({
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                className="w-full px-3 py-2  rounded-lg focus:outline-none bg-gray-900 focus:border-transparent"
                 placeholder="Enter job title"
                 required
               />
@@ -165,7 +165,7 @@ const JobForm: React.FC<JobFormProps> = ({
             <div>
               <label
                 htmlFor="description"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-gray-200 mb-1"
               >
                 Job Description *
               </label>
@@ -175,7 +175,7 @@ const JobForm: React.FC<JobFormProps> = ({
                 value={formData.description}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                className="w-full px-3 py-2 rounded-lg focus:outline-none bg-gray-900 focus:border-transparent"
                 placeholder="Describe the job requirements, skills needed, and project details"
                 required
               />
@@ -184,7 +184,7 @@ const JobForm: React.FC<JobFormProps> = ({
             <div>
               <label
                 htmlFor="category"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-gray-200 mb-1"
               >
                 Category *
               </label>
@@ -193,7 +193,7 @@ const JobForm: React.FC<JobFormProps> = ({
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                className="w-full px-3 py-2 rounded-lg focus:outline-none bg-gray-900 focus:border-transparent"
                 required
               >
                 <option value="">Select a category</option>
@@ -208,7 +208,7 @@ const JobForm: React.FC<JobFormProps> = ({
             <div>
               <label
                 htmlFor="budget"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-gray-200 mb-1"
               >
                 Budget (USD) *
               </label>
@@ -219,8 +219,7 @@ const JobForm: React.FC<JobFormProps> = ({
                 value={formData.budget || ""}
                 onChange={handleChange}
                 min="1"
-                step="0.01"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                className="w-full px-3 py-2 rounded-lg focus:outline-none bg-gray-900 focus:border-transparent"
                 placeholder="Enter budget amount"
                 required
               />
@@ -229,7 +228,7 @@ const JobForm: React.FC<JobFormProps> = ({
             <div>
               <label
                 htmlFor="deadline"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-gray-200 mb-1"
               >
                 Deadline *
               </label>
@@ -240,7 +239,7 @@ const JobForm: React.FC<JobFormProps> = ({
                 value={formData.deadline}
                 onChange={handleChange}
                 min={new Date().toISOString().split("T")[0]}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                className="w-full px-3 py-2 rounded-lg focus:outline-none bg-gray-900 focus:border-transparent"
                 required
               />
             </div>

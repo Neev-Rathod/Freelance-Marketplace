@@ -35,7 +35,13 @@ export default function Login() {
         if (data.token) {
           localStorage.setItem("token", data.token);
           localStorage.setItem("user", JSON.stringify(data.user));
-          navigate(data.user.role === "client" ? "/client" : "/freelancer");
+          if (data.user.role === "client") {
+            navigate("/client");
+          } else if (data.user.role === "admin") {
+            navigate("/admin");
+          } else {
+            navigate("/freelancer");
+          }
         }
       } else {
         setError("Invalid email or password");

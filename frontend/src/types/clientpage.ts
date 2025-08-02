@@ -45,3 +45,28 @@ export interface JobFormData {
 export interface ApiError {
   error: string;
 }
+
+export interface Contract {
+  _id: string;
+  job: {
+    _id: string;
+    title: string;
+    description: string;
+    budget: number;
+    deadline: string;
+  };
+  client: {
+    _id: string;
+    name: string;
+    email: string;
+    company?: string;
+  };
+  freelancer: {
+    _id: string;
+    name: string;
+    email: string;
+    skills: string[];
+  };
+  status: string;
+  createdAt: string;
+}

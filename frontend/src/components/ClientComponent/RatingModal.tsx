@@ -1,18 +1,7 @@
 import React, { useState } from "react";
 import { X, Star } from "lucide-react";
 import { contractsApi, ratingsApi } from "../../api/request";
-
-interface Contract {
-  _id: string;
-  job: {
-    _id: string;
-    title: string;
-  };
-  freelancer: {
-    _id: string;
-    name: string;
-  };
-}
+import type { Contract } from "../../types/clientpage";
 
 interface RatingModalProps {
   isOpen: boolean;
@@ -77,11 +66,11 @@ const RatingModal: React.FC<RatingModalProps> = ({
   if (!isOpen || !contract) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl max-w-md w-full">
+    <div className="fixed inset-0 bg-black/30 bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-gray-800 rounded-xl max-w-md w-full">
         <div className="p-6 border-b border-gray-200">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold text-gray-900">Complete & Rate</h2>
+            <h2 className="text-xl font-bold text-gray-100">Complete & Rate</h2>
             <button
               onClick={handleClose}
               className="text-gray-500 hover:text-gray-700"
@@ -99,7 +88,7 @@ const RatingModal: React.FC<RatingModalProps> = ({
           )}
 
           <div className="mb-6">
-            <h3 className="font-medium text-gray-900 mb-2">
+            <h3 className="font-medium text-gray-200 mb-2">
               Rate {contract.freelancer.name}'s work on "{contract.job.title}"
             </h3>
 
@@ -127,7 +116,7 @@ const RatingModal: React.FC<RatingModalProps> = ({
             <div>
               <label
                 htmlFor="review"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-gray-400 mb-1"
               >
                 Review (optional)
               </label>

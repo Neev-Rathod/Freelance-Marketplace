@@ -1,5 +1,6 @@
 import axios from "axios";
 import type { Job, JobFormData, Application } from "../types/clientpage";
+import type { Dispute, User } from "./../types/adminPage";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -13,6 +14,17 @@ const getAuthHeaders = () => {
 };
 
 export const jobsApi = {
+  applyForJob: async (jobId: string, applicationData: any) => {
+    const response = await axios.post(
+      `${API_BASE_URL}/applications/${jobId}/applications`,
+      applicationData,
+      {
+        headers: getAuthHeaders(),
+      }
+    );
+    return response.data;
+  },
+
   // Fetch all jobs for the client
   fetchMyJobs: async (): Promise<Job[]> => {
     const response = await axios.get(`${API_BASE_URL}/jobs/my-jobs`, {
@@ -92,9 +104,18 @@ export const userApi = {
     });
     return response.data;
   },
+  updateProfile: async (profileData: Partial<User>) => {
+    const response = await axios.put(
+      `${API_BASE_URL}/users/profile`,
+      profileData,
+      {
+        headers: getAuthHeaders(),
+      }
+    );
+    return response.data;
+  },
 };
 
-// Contracts API
 export const contractsApi = {
   getActiveContracts: async () => {
     const response = await axios.get(`${API_BASE_URL}/contracts/active`, {
@@ -115,7 +136,6 @@ export const contractsApi = {
   },
 };
 
-// Ratings API
 export const ratingsApi = {
   submitRating: async (ratingData: {
     jobId: string;
@@ -165,5 +185,74 @@ export const disputeApi = {
       }
     );
     return response.data;
+  },
+};
+
+export const adminApi = {
+  // --- Disputes ---
+  getAllDisputes: async (): Promise<Dispute[]> => {
+    const response = await axios.get(
+      `${API_BASE_URL}/disputes/admin/disputes`,
+      {
+        headers: getAuthHeaders(),
+      }
+    );
+    return response.data;
+  },
+
+  resolveDispute: async (
+    disputeId: string,
+    resolution: string,
+    status: "resolved" | "rejected"
+  ): Promise<Dispute> => {
+    const response = await axios.put(
+      `${API_BASE_URL}/disputes/admin/disputes/${disputeId}/resolve`,
+      { resolution, status },
+      {
+        headers: getAuthHeaders(),
+      }
+    );
+    return response.data.dispute;
+  },
+
+  // --- Users ---
+  getAllUsers: async (): Promise<User[]> => {
+    const response = await axios.get(`${API_BASE_URL}/users`, {
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  },
+
+  deactivateUser: async (userId: string): Promise<User> => {
+    const response = await axios.put(
+      `${API_BASE_URL}/users/${userId}`,
+      {},
+      {
+        headers: getAuthHeaders(),
+      }
+    );
+    return response.data.user;
+  },
+
+  // --- Jobs ---
+  getAllJobs: async (): Promise<Job[]> => {
+    const response = await axios.get(`${API_BASE_URL}/jobs`, {
+      headers: getAuthHeaders(),
+    });
+    return response.data;
+  },
+
+  moderateJob: async (
+    jobId: string,
+    status: "approved" | "rejected"
+  ): Promise<Job> => {
+    const response = await axios.put(
+      `${API_BASE_URL}/jobs/${jobId}/moderate`,
+      { status },
+      {
+        headers: getAuthHeaders(),
+      }
+    );
+    return response.data.job;
   },
 };

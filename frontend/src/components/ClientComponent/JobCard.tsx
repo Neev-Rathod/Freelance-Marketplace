@@ -23,9 +23,9 @@ const JobCard: React.FC<JobCardProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+    <div className="bg-gray-900 rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
       <div className="flex justify-between items-start mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 truncate pr-2">
+        <h3 className="text-lg font-semibold text-gray-100 truncate pr-2">
           {job.title}
         </h3>
         <div className="flex items-center gap-2">
@@ -71,8 +71,8 @@ const JobCard: React.FC<JobCardProps> = ({
       </div>
 
       {job.hiredFreelancer && (
-        <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-          <p className="text-green-800 text-sm">
+        <div className="mb-4 p-3 bg-green-800  rounded-lg">
+          <p className="text-green-100 text-sm">
             <strong>Hired:</strong> {job.hiredFreelancer.name}
           </p>
         </div>
@@ -82,7 +82,7 @@ const JobCard: React.FC<JobCardProps> = ({
         {(job.applications?.length || 0) > 0 && (
           <button
             onClick={() => onViewApplications(job)}
-            className="flex-1 bg-gray-900 hover:bg-gray-800 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+            className="flex-1 bg-gray-700 hover:bg-gray-800 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
           >
             <Eye className="w-4 h-4" />
             View Applications ({job.applications?.length})
